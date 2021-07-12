@@ -2,6 +2,7 @@ from player import Player
 import numpy as np
 from config import CONFIG
 import copy
+import random
 
 
 class Evolution():
@@ -45,14 +46,13 @@ class Evolution():
 
         else:
             new_population = []
-            p_crossover = 1
+            p_crossover = 0.9
             p_mutation = 0.2
-            for i in range(num_players//2):
+            for i in range(num_players):
                 parents = self.q_tournament_selection(prev_players, 2)
                 rand_num = np.random.uniform(0, 1)
                 if rand_num <= p_crossover:
                     child1 = Player(self.mode)
-                    child2 = Player(self.mode)
                     #child1: weights of first layer (first half from first parent and second half from second parent) and so on
                     child1.nn.weights[0][0:child1.nn.layer_sizes[1]//2] = parents[0].nn.weights[0][0:parents[0].nn.layer_sizes[1]//2]
                     child1.nn.weights[0][child1.nn.layer_sizes[1]//2:] = parents[1].nn.weights[0][parents[1].nn.layer_sizes[1]//2:]
@@ -66,28 +66,12 @@ class Evolution():
                     child1.nn.biases[1][0:child1.nn.layer_sizes[2]//2] = parents[0].nn.biases[1][0:parents[0].nn.layer_sizes[2]//2]
                     child1.nn.biases[1][child1.nn.layer_sizes[2]//2:] = parents[1].nn.biases[1][parents[1].nn.layer_sizes[2]//2:]
 
-                    #child2: weights of layer one (first half from second parent and second half from first parent)
-                    child2.nn.weights[0][0:child2.nn.layer_sizes[1] // 2] = parents[1].nn.weights[0][0:parents[1].nn.layer_sizes[1] // 2]
-                    child2.nn.weights[0][child2.nn.layer_sizes[1] // 2:] = parents[0].nn.weights[0][parents[0].nn.layer_sizes[1] // 2:]
-                    # child2: weights of second layer
-                    child2.nn.weights[1][0:child2.nn.layer_sizes[2] // 2] = parents[1].nn.weights[1][0:parents[1].nn.layer_sizes[2] // 2]
-                    child2.nn.weights[1][child2.nn.layer_sizes[2] // 2:] = parents[0].nn.weights[1][parents[0].nn.layer_sizes[2] // 2:]
-                    # child2: biases of first layer
-                    child2.nn.biases[0][0:child2.nn.layer_sizes[1] // 2] = parents[1].nn.biases[0][0:parents[1].nn.layer_sizes[1] // 2]
-                    child2.nn.biases[0][child2.nn.layer_sizes[1] // 2:] = parents[0].nn.biases[0][parents[0].nn.layer_sizes[1] // 2:]
-                    # child2: biases of second layer
-                    child2.nn.biases[1][0:child2.nn.layer_sizes[2] // 2] = parents[1].nn.biases[1][0:parents[1].nn.layer_sizes[2] // 2]
-                    child2.nn.biases[1][child2.nn.layer_sizes[2] // 2:] = parents[0].nn.biases[1][parents[0].nn.layer_sizes[2] // 2:]
-
                 else:
                     child1 = copy.deepcopy(parents[0])
-                    child2 = copy.deepcopy(parents[1])
 
                 if np.random.uniform(0, 1) <= p_mutation:
                     self.mutate(child1)
-                    self.mutate(child2)
                 new_population.append(child1)
-                new_population.append(child2)
 
             return new_population
 
@@ -104,5 +88,5 @@ class Evolution():
         return next_population
         # TODO (additional): plotting
 
-        return next_population
+        #return next_population
 
