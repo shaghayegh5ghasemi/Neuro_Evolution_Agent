@@ -90,23 +90,35 @@ class Player():
 
         layer_sizes = None
         if mode == 'gravity':
-            layer_sizes = [6, 20, 1]
+            layer_sizes = [5, 20, 1]
         elif mode == 'helicopter':
-            layer_sizes = [6, 20, 1]
+            layer_sizes = [5, 20, 1]
         elif mode == 'thrust':
             layer_sizes = [6, 20, 1]
         return layer_sizes
 
     
     def think(self, mode, box_lists, agent_position, velocity):
-
-        # TODO
         # mode example: 'helicopter'
         # box_lists: an array of `BoxList` objects
         # agent_position example: [600, 250]
         # velocity example: 7
+        max_x = CONFIG['WIDTH']
+        max_y = CONFIG['HEIGHT']
+        max_v = 12
+        nn_input = np.zeros((5, 1))
+        if mode == 'helicopter':
+            if len(box_lists) != 0:
+                nn_input[0] = (box_lists[0].x)/max_x
+                nn_input[1] = (box_lists[0].gap_mid)/max_y
 
-        direction = -1
+            nn_input[2] = (agent_position[0])/max_x
+            nn_input[3] = (agent_position[1])/max_y
+            nn_input[4] = (velocity)/max_v
+            output = self.nn.forward(nn_input)
+            direction = -1
+            if output[0][0] > 0.5:
+                direction = 1
         return direction
 
     def collision_detection(self, mode, box_lists, camera):
