@@ -1,21 +1,24 @@
 import numpy as np
+import random
 
 
 class NeuralNetwork():
 
     def __init__(self, layer_sizes):
+        self.layer_sizes = layer_sizes
+        self.weights = []
+        self.biases = []
+        # initialize weights and biases randomly
+        self.weights.append(np.random.normal(size=(layer_sizes[1], layer_sizes[0])))
+        self.weights.append(np.random.normal(size=(layer_sizes[2], layer_sizes[1])))
+        self.biases.append(np.zeros((layer_sizes[1], 1)))
+        self.biases.append(np.zeros((layer_sizes[2], 1)))
 
-        # TODO
-        # layer_sizes example: [4, 10, 2]
-        pass
-
+    # sigmoid is considered as activation function
     def activation(self, x):
-        
-        # TODO
-        return x
+        return 1/(1 + np.exp(-x))
 
     def forward(self, x):
-        
-        # TODO
-        # x example: np.array([[0.1], [0.2], [0.3]])
-        pass
+        hidden_layer_output = self.activation(self.weights[0] @ x + self.biases[0])
+        output = self.activation(self.weights[1] @ hidden_layer_output + self.biases[1])
+        return output
