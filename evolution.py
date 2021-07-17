@@ -2,7 +2,6 @@ from player import Player
 import numpy as np
 from config import CONFIG
 import copy
-import random
 
 
 class Evolution():
@@ -85,8 +84,21 @@ class Evolution():
                 temp_population.append(players[np.random.randint(0, len(players))])
             temp_population.sort(key=lambda x: x.fitness, reverse=True)
             next_population.append(temp_population[0])
-        return next_population
-        # TODO (additional): plotting
 
-        #return next_population
+        #(additional): plotting [avg, max, min]
+        population_info = ""
+        sum = 0
+        for i in range(len(players)):
+            sum += players[i].fitness
+        population_info += str(sum/len(players))
+        temp = copy.deepcopy(players)
+        temp.sort(key=lambda x: x.fitness, reverse=True)
+        population_info += " "
+        population_info += str(temp[0].fitness)
+        population_info += " "
+        population_info += str(temp[1].fitness)
+        with open('info.txt', "a") as myfile:
+            myfile.write(population_info)
+            myfile.write("\n")
+        return next_population
 

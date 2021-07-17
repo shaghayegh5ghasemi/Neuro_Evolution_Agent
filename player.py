@@ -102,10 +102,10 @@ class Player():
         max_x = CONFIG['WIDTH']
         max_y = CONFIG['HEIGHT']
         max_v = 12
-        direction = -1
-        nn_input = np.zeros((5, 1))
 
-        if mode == 'helicopter' or mode == 'gravity':
+        if mode == 'helicopter' or mode == 'gravity' or mode == 'thrust':
+            nn_input = np.zeros((5, 1))
+            direction = -1
             if len(box_lists) > 0:
                 nn_input[0] = (box_lists[0].x - agent_position[0])/max_x
                 nn_input[1] = (box_lists[0].gap_mid - agent_position[1])/max_y
@@ -118,8 +118,6 @@ class Player():
             if output[0][0] > 0.5:
                 direction = 1
             return direction
-        if mode == 'thrust':
-            pass
 
     def collision_detection(self, mode, box_lists, camera):
         if mode == 'helicopter':
