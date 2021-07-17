@@ -96,7 +96,7 @@ class Evolution():
         population_info += " "
         population_info += str(temp[0].fitness)
         population_info += " "
-        population_info += str(temp[1].fitness)
+        population_info += str(temp[-1].fitness)
         with open('info.txt', "a") as myfile:
             myfile.write(population_info)
             myfile.write("\n")
